@@ -20,5 +20,75 @@ $(function () {
     // attribute of each time-block be used to do this?
     //
     // TODO: Add code to display the current date in the header of the page.
-  });
-  
+
+
+
+
+// generic global variables, which are useless
+//const currentDate = $("#currentDay");
+const now = dayjs();
+//console.log(now);
+const rowBox = document.querySelector(".row");
+
+let block = document.querySelector(".time-block");
+const hourArray = document.querySelectorAll("#hour-9, #hour-10, #hour-11, #hour-12, #hour-13, #hour-14, #hour-15, #hour-16, #hour-17");
+//console.log(hourArray);
+
+/*
+now.format("Do MMMM, YYYY");
+*/
+
+/* CodexWorld code block
+const nth = function(d) {
+  if (d > 3 && d < 21) return 'th';
+  switch (d % 10) {
+    case 1:  return "st";
+    case 2:  return "nd";
+    case 3:  return "rd";
+    default: return "th";
+  }
+};
+*/
+
+$(".saveBtn").on("click", function() {
+  const descrip = $(this).siblings(".description").val();
+  const block = $(this).parent().attr("id");
+
+  localStorage.setItem(block, descrip);
+});
+
+// Andrea's code
+$(".saveBtn").each(function() {
+    var block = $(this).parent().attr("id");
+    var textinput = localStorage.getItem(block);
+    $(this).prev().val(textinput);
+});
+
+// Andrea's recommendation, modified to actually work
+function checkHour() {
+  var hour = dayjs().hour();
+  //console.log(hour);
+	$('.time-block').each(function() {
+    //console.log(this);
+		const blockHour = ($(this).attr('id').split("-")[1]);
+    //console.log(blockHour);
+		if (hour > blockHour) {
+			$(this).addClass('past');
+		} else if (hour == blockHour) {
+			$(this).addClass('present');
+		} else if (hour < blockHour) {
+			$(this).addClass('future');
+		}
+	});
+}
+
+// Simple clock that killed some of my brain cells
+function currentTime() { $("#currentDay").text(dayjs().format("dddd, MMMM D, YYYY")); }
+
+// Functions that are called on refresh
+currentTime();
+checkHour();
+
+// Interval clock that checks and changes the time blocks every minute
+setInterval(checkHour, 60000);
+});
